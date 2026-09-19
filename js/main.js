@@ -1,16 +1,37 @@
-
 document.addEventListener("DOMContentLoaded", () => {
+  // Menú móvil: mismo comportamiento en todas las páginas.
   const toggle = document.querySelector(".menu-toggle");
   const panel = document.querySelector(".mobile-panel");
+
   if (toggle && panel) {
-    const close = () => {
-      panel.classList.remove("open");
-      toggle.setAttribute("aria-expanded","false");
-      toggle.setAttribute("aria-label","Abrir menú");
-      toggle.classList.remove("open");
+    const setMenu = (open) => {
+      panel.classList.toggle("open", open);
+      toggle.classList.toggle("open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
     };
-    // El botón también tiene un fallback inline para que funcione aunque main.js tarde en cargar.
-    panel.querySelectorAll("a").forEach(a => a.addEventListener("click", close));
+
+    toggle.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setMenu(!panel.classList.contains("open"));
+    });
+
+    panel.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => setMenu(false));
+    });
+
+    document.addEventListener("click", (event) => {
+      if (panel.classList.contains("open") &&
+          !panel.contains(event.target) &&
+          !toggle.contains(event.target)) {
+        setMenu(false);
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setMenu(false);
+    });
   }
 
   const observer = new IntersectionObserver(entries => {
