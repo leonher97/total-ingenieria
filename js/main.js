@@ -6,13 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const close = () => {
       panel.classList.remove("open");
       toggle.setAttribute("aria-expanded","false");
+      toggle.setAttribute("aria-label","Abrir menú");
       toggle.classList.remove("open");
     };
-    toggle.addEventListener("click", () => {
-      const open = panel.classList.toggle("open");
-      toggle.setAttribute("aria-expanded", String(open));
-      toggle.classList.toggle("open", open);
-    });
+    // El botón también tiene un fallback inline para que funcione aunque main.js tarde en cargar.
     panel.querySelectorAll("a").forEach(a => a.addEventListener("click", close));
   }
 
